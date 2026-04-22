@@ -389,7 +389,8 @@ body {
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-top: var(--nav-height);
+  padding-top: calc(var(--nav-height) + 40px);
+  padding-bottom: 80px;
 }
 
 .hero-canvas {
@@ -611,6 +612,13 @@ body {
 .about-subtitle { font-size: 0.85rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
 .about-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
 .about-text { font-size: 1rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px; }
+
+.about-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
 
 .about-tags { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0; }
 .about-tag {
@@ -1004,6 +1012,7 @@ body {
   width: 60px; height: 60px;
   border-radius: 50%;
   background: var(--gradient-hero);
+  color: #ffffff;
   box-shadow: 0 8px 32px rgba(124,58,237,0.5);
   border: none;
   cursor: pointer;
@@ -1011,7 +1020,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.6rem;
-  z-index: 999;
+  z-index: 9999;
   transition: var(--transition);
 }
 
@@ -1095,6 +1104,7 @@ body {
   gap: 12px;
   scrollbar-width: thin;
   scrollbar-color: var(--accent-purple) transparent;
+  overscroll-behavior: contain;
 }
 
 .chat-msg {
@@ -1303,7 +1313,11 @@ body {
   :root { --section-py: 64px; }
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
-  .hero-stats { gap: 24px; }
+  .hero-stats { 
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
   .projects-grid { grid-template-columns: 1fr; }
   .skills-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }

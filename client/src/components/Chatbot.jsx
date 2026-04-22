@@ -97,7 +97,7 @@ export default function Chatbot() {
             </div>
 
             {/* Messages */}
-            <div className="chatbot-messages">
+            <div className="chatbot-messages" data-lenis-prevent="true">
               <AnimatePresence initial={false}>
                 {messages.map((m, i) => (
                   <motion.div

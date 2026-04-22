@@ -25,7 +25,7 @@ export default function Contact() {
     setSending(true);
     try {
       await sendContact(form);
-      toast.success('🎉 Message sent! Alex will reply soon.', {
+      toast.success('🎉 Message sent! Nevil will reply soon.', {
         style: { background: '#0f0f1e', color: '#f1f5f9', border: '1px solid rgba(124,58,237,0.3)' },
         iconTheme: { primary: '#7c3aed', secondary: '#fff' },
       });

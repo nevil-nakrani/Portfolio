@@ -117,7 +117,7 @@ export default function About() {
 
             {/* Highlights row */}
             <motion.div
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}
+              className="about-highlights"
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.6 }}

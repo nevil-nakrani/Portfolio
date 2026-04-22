@@ -163,24 +163,26 @@ export default function Hero() {
           <a href="#contact" className="btn btn-outline">
             Get In Touch
           </a>
-          <a
-            href="https://github.com/nevil-nakrani"
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-outline"
-            style={{ padding: '12px', borderRadius: '50%', width: 48, height: 48, justifyContent: 'center' }}
-          >
-            <FiGithub />
-          </a>
-          <a
-            href="https://linkedin.com/in/nevil-nakrani"
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-outline"
-            style={{ padding: '12px', borderRadius: '50%', width: 48, height: 48, justifyContent: 'center' }}
-          >
-            <FiLinkedin />
-          </a>
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <a
+              href="https://github.com/nevil-nakrani"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline"
+              style={{ padding: '12px', borderRadius: '50%', width: 48, height: 48, justifyContent: 'center' }}
+            >
+              <FiGithub />
+            </a>
+            <a
+              href="https://linkedin.com/in/nevil-nakrani"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline"
+              style={{ padding: '12px', borderRadius: '50%', width: 48, height: 48, justifyContent: 'center' }}
+            >
+              <FiLinkedin />
+            </a>
+          </div>
         </motion.div>
 
         <motion.div className="hero-stats" {...fadeUp(0.65)}>
