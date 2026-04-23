@@ -1,4 +1,5 @@
 import Message from '../models/Message.js';
+import { sendContactEmail,sendAutoReply } from '../services/emails.js';
 
 export const sendMessage = async (req, res) => {
   try {
@@ -10,6 +11,10 @@ export const sendMessage = async (req, res) => {
 
     const newMsg = await Message.create({ name, email, subject, message });
     res.status(201).json({ success: true, data: newMsg, message: 'Message sent successfully!' });
+
+    await sendContactEmail(name, email, subject, message);
+    await sendAutoReply(name, email);
+
   } catch (error) {
     console.error('Contact error:', error);
     res.status(500).json({ success: false, error: 'Server error. Please try again.' });
