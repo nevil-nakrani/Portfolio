@@ -4,6 +4,8 @@ import { useInView } from 'react-intersection-observer';
 import { FiMail, FiMapPin, FiGithub, FiLinkedin, FiSend, FiTwitter } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
 import { sendContact } from '../utils/api';
+import AnimatedText from './AnimatedText';
+import { ScrollReveal, MagneticButton, StaggerContainer, StaggerItem } from './AnimationPrimitives';
 
 const CONTACT_ITEMS = [
   { icon: <FiMail />,    label: 'Email',    value: 'nakaraninevil2017@gmail.com'   },
@@ -17,6 +19,7 @@ export default function Contact() {
 
   const [form, setForm]       = useState({ name: '', email: '', subject: '', message: '' });
   const [sending, setSending] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -43,26 +46,25 @@ export default function Contact() {
     <section className="section" id="contact" ref={ref}>
       <Toaster position="top-right" />
       <div className="container">
-        <motion.div
-          className="section-header"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="section-tag">📬 Contact</div>
-          <h2 className="section-title">Let's Work Together</h2>
-          <p className="section-subtitle">
-            Have a project in mind? Let's build something amazing together.
-          </p>
-        </motion.div>
+        <ScrollReveal>
+          <div className="section-header">
+            <div className="section-tag">📬 Contact</div>
+            <AnimatedText
+              text="Let's Work Together"
+              tag="h2"
+              mode="word"
+              className="section-title"
+              staggerDelay={0.08}
+            />
+            <p className="section-subtitle">
+              Have a project in mind? Let's build something amazing together.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="contact-grid">
           {/* Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7 }}
-          >
+          <ScrollReveal direction="left">
             <h3 className="contact-info-title">
               Get In <span className="gradient-text">Touch</span>
             </h3>
@@ -70,23 +72,27 @@ export default function Contact() {
               Whether you need a MERN stack app, an Odoo module, an AI chatbot, or just want to chat about tech — I'm here. Drop me a message and I'll get back within 24 hours.
             </p>
 
-            <div className="contact-items">
-              {CONTACT_ITEMS.map((item, i) => (
-                <motion.div
-                  key={item.label}
-                  className="contact-item"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.2 + i * 0.08 }}
-                >
-                  <div className="contact-item-icon">{item.icon}</div>
-                  <div>
-                    <div className="contact-item-label">{item.label}</div>
-                    <div className="contact-item-value">{item.value}</div>
-                  </div>
-                </motion.div>
+            <StaggerContainer className="contact-items" stagger={0.08} delay={0.2}>
+              {CONTACT_ITEMS.map((item) => (
+                <StaggerItem key={item.label}>
+                  <motion.div
+                    className="contact-item"
+                    whileHover={{ x: 8, transition: { duration: 0.2 } }}
+                  >
+                    <motion.div
+                      className="contact-item-icon"
+                      whileHover={{ rotate: 15, scale: 1.1 }}
+                    >
+                      {item.icon}
+                    </motion.div>
+                    <div>
+                      <div className="contact-item-label">{item.label}</div>
+                      <div className="contact-item-value">{item.value}</div>
+                    </div>
+                  </motion.div>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
 
             {/* Social links */}
             <motion.div
@@ -100,93 +106,109 @@ export default function Contact() {
                 { icon: <FiLinkedin />, href: 'https://linkedin.com/in/nevil-nakrani' },
                 { icon: <FiTwitter />,  href: 'https://twitter.com/nevil_nakrani'  },
               ].map((s, i) => (
-                <motion.a
-                  key={i}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="footer-social"
-                  whileHover={{ y: -4, scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {s.icon}
-                </motion.a>
+                <MagneticButton key={i} strength={0.4}>
+                  <motion.a
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="footer-social"
+                    whileHover={{ y: -4, scale: 1.15 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {s.icon}
+                  </motion.a>
+                </MagneticButton>
               ))}
             </motion.div>
-          </motion.div>
+          </ScrollReveal>
 
           {/* Form */}
-          <motion.form
-            className="contact-form glass-card"
-            style={{ padding: 36 }}
-            onSubmit={handleSubmit}
-            initial={{ opacity: 0, x: 40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1 }}
-          >
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Name *</label>
-                <input
-                  className="form-input"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Email *</label>
-                <input
-                  className="form-input"
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Subject</label>
-              <input
-                className="form-input"
-                name="subject"
-                value={form.subject}
-                onChange={handleChange}
-                placeholder="Project idea / Collaboration / Question..."
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Message *</label>
-              <textarea
-                className="form-textarea"
-                name="message"
-                value={form.message}
-                onChange={handleChange}
-                placeholder="Tell me about your project or idea..."
-                required
-              />
-            </div>
-
-            <motion.button
-              type="submit"
-              className="btn btn-primary form-submit"
-              disabled={sending}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+          <ScrollReveal direction="right">
+            <motion.form
+              className="contact-form glass-card"
+              style={{ padding: 36 }}
+              onSubmit={handleSubmit}
             >
-              {sending ? (
-                <>Sending...</>
-              ) : (
-                <><FiSend /> Send Message</>
-              )}
-            </motion.button>
-          </motion.form>
+              <div className="form-row">
+                <div className={`form-group ${focusedField === 'name' ? 'focused' : ''}`}>
+                  <label className="form-label">Name *</label>
+                  <input
+                    className="form-input"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('name')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="Your name"
+                    required
+                  />
+                </div>
+                <div className={`form-group ${focusedField === 'email' ? 'focused' : ''}`}>
+                  <label className="form-label">Email *</label>
+                  <input
+                    className="form-input"
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField('email')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="your@email.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className={`form-group ${focusedField === 'subject' ? 'focused' : ''}`}>
+                <label className="form-label">Subject</label>
+                <input
+                  className="form-input"
+                  name="subject"
+                  value={form.subject}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField('subject')}
+                  onBlur={() => setFocusedField(null)}
+                  placeholder="Project idea / Collaboration / Question..."
+                />
+              </div>
+
+              <div className={`form-group ${focusedField === 'message' ? 'focused' : ''}`}>
+                <label className="form-label">Message *</label>
+                <textarea
+                  className="form-textarea"
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  onFocus={() => setFocusedField('message')}
+                  onBlur={() => setFocusedField(null)}
+                  placeholder="Tell me about your project or idea..."
+                  required
+                />
+              </div>
+
+              <MagneticButton strength={0.15}>
+                <motion.button
+                  type="submit"
+                  className="btn btn-primary form-submit"
+                  disabled={sending}
+                  whileHover={{ scale: 1.02, boxShadow: '0 12px 40px rgba(124,58,237,0.6)' }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {sending ? (
+                    <motion.span
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                      style={{ display: 'inline-block' }}
+                    >
+                      ⏳
+                    </motion.span>
+                  ) : (
+                    <><FiSend /> Send Message</>
+                  )}
+                </motion.button>
+              </MagneticButton>
+            </motion.form>
+          </ScrollReveal>
         </div>
       </div>
     </section>

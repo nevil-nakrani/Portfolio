@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { FiGithub, FiExternalLink } from 'react-icons/fi';
+import TiltCard from './TiltCard';
+import AnimatedText from './AnimatedText';
+import { ScrollReveal } from './AnimationPrimitives';
 
 const PROJECTS = [
   {
@@ -13,7 +16,6 @@ const PROJECTS = [
     category: 'MERN',
     github: 'https://github.com',
     demo: '#',
-    featured: true,
   },
   {
     id: 2,
@@ -24,7 +26,6 @@ const PROJECTS = [
     category: 'MERN',
     github: 'https://github.com/nevil-nakrani/Food-Delivery-App',
     demo: '#',
-    featured: true,
   },
   {
     id: 3,
@@ -35,7 +36,6 @@ const PROJECTS = [
     category: 'MERN',
     github: 'https://github.com',
     demo: '#',
-    featured: true,
   },
   {
     id: 4,
@@ -46,7 +46,6 @@ const PROJECTS = [
     category: 'MERN',
     github: 'https://github.com',
     demo: '#',
-    featured: true,
   },
   {
     id: 5,
@@ -57,7 +56,6 @@ const PROJECTS = [
     category: 'Odoo',
     github: 'https://github.com',
     demo: '#',
-    featured: false,
   },
   {
     id: 6,
@@ -68,7 +66,6 @@ const PROJECTS = [
     category: 'AI',
     github: 'https://github.com',
     demo: '#',
-    featured: true,
   }
 ];
 
@@ -83,18 +80,21 @@ export default function Projects() {
   return (
     <section className="section" id="projects" ref={ref}>
       <div className="container">
-        <motion.div
-          className="section-header"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="section-tag">🚀 Projects</div>
-          <h2 className="section-title">What I've Built</h2>
-          <p className="section-subtitle">
-            A selection of real-world projects spanning MERN applications, Odoo ERP modules, and AI-powered systems.
-          </p>
-        </motion.div>
+        <ScrollReveal>
+          <div className="section-header">
+            <div className="section-tag">🚀 Projects</div>
+            <AnimatedText
+              text="What I've Built"
+              tag="h2"
+              mode="word"
+              className="section-title"
+              staggerDelay={0.08}
+            />
+            <p className="section-subtitle">
+              A selection of real-world projects spanning MERN applications, Odoo ERP modules, and AI-powered systems.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Filter */}
         <motion.div
@@ -108,10 +108,17 @@ export default function Projects() {
               key={f}
               className={`filter-btn${filter === f ? ' active' : ''}`}
               onClick={() => setFilter(f)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.08, y: -2 }}
+              whileTap={{ scale: 0.93 }}
             >
               {f}
+              {filter === f && (
+                <motion.div
+                  className="filter-btn-indicator"
+                  layoutId="filterIndicator"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
             </motion.button>
           ))}
         </motion.div>
@@ -121,55 +128,76 @@ export default function Projects() {
           <motion.div
             key={filter}
             className="projects-grid"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.35 }}
           >
             {visible.map((project, i) => (
-              <motion.div
+              <TiltCard
                 key={project.id}
                 className="project-card glass-card"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                whileHover={{ y: -8, transition: { duration: 0.25 } }}
+                intensity={6}
+                scale={1.03}
               >
-                <div className="project-card-glow" />
+                <motion.div
+                  initial={{ opacity: 0, y: 50, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                >
+                  <div className="project-card-glow" />
 
-                {project.featured && (
-                  <div style={{
-                    position: 'absolute', top: 16, left: 16,
-                    background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.3)',
-                    borderRadius: 100, padding: '3px 10px',
-                    fontSize: '0.7rem', fontWeight: 700, color: 'var(--accent-glow)',
-                    zIndex: 2,
-                  }}>
-                    ★ Featured
+                  <div className="project-header">
+                    <motion.div
+                      className="project-icon"
+                      whileHover={{ scale: 1.3, rotate: 10 }}
+                      transition={{ type: 'spring', stiffness: 400 }}
+                    >
+                      {project.icon}
+                    </motion.div>
+                    <div className="project-links">
+                      <motion.a
+                        href={project.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="project-link"
+                        title="GitHub"
+                        whileHover={{ scale: 1.15, rotate: 5 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <FiGithub />
+                      </motion.a>
+                      <motion.a
+                        href={project.demo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="project-link"
+                        title="Live Demo"
+                        whileHover={{ scale: 1.15, rotate: -5 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <FiExternalLink />
+                      </motion.a>
+                    </div>
                   </div>
-                )}
 
-                <div className="project-header" style={{ marginTop: project.featured ? 28 : 0 }}>
-                  <div className="project-icon">{project.icon}</div>
-                  <div className="project-links">
-                    <a href={project.github} target="_blank" rel="noreferrer" className="project-link" title="GitHub">
-                      <FiGithub />
-                    </a>
-                    <a href={project.demo} target="_blank" rel="noreferrer" className="project-link" title="Live Demo">
-                      <FiExternalLink />
-                    </a>
+                  <div className="project-title">{project.title}</div>
+                  <p className="project-desc">{project.desc}</p>
+
+                  <div className="project-tags">
+                    {project.tags.map(tag => (
+                      <motion.span
+                        key={tag}
+                        className="project-tag"
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        transition={{ type: 'spring', stiffness: 400 }}
+                      >
+                        {tag}
+                      </motion.span>
+                    ))}
                   </div>
-                </div>
-
-                <div className="project-title">{project.title}</div>
-                <p className="project-desc">{project.desc}</p>
-
-                <div className="project-tags">
-                  {project.tags.map(tag => (
-                    <span key={tag} className="project-tag">{tag}</span>
-                  ))}
-                </div>
-              </motion.div>
+                </motion.div>
+              </TiltCard>
             ))}
           </motion.div>
         </AnimatePresence>

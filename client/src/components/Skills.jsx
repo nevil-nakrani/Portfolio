@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import TiltCard from './TiltCard';
+import AnimatedText from './AnimatedText';
+import { ScrollReveal } from './AnimationPrimitives';
 
 const SKILL_GROUPS = {
   MERN: [
@@ -45,34 +48,40 @@ const LEVEL_COLOR = {
 
 function SkillCard({ skill, index, inView }) {
   return (
-    <motion.div
-      className="skill-card glass-card"
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.07 }}
-      whileHover={{ y: -6, transition: { duration: 0.2 } }}
-    >
-      <div className="skill-card-header">
-        <div className="skill-icon">{skill.icon}</div>
-        <div>
-          <div className="skill-name">{skill.name}</div>
-          <div className="skill-level" style={{ color: LEVEL_COLOR[skill.level] }}>
-            {skill.level}
+    <TiltCard className="skill-card glass-card" intensity={8} scale={1.03}>
+      <motion.div
+        initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
+        animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+        transition={{ duration: 0.5, delay: index * 0.07 }}
+      >
+        <div className="skill-card-header">
+          <motion.div
+            className="skill-icon"
+            whileHover={{ rotate: 15, scale: 1.2 }}
+            transition={{ type: 'spring', stiffness: 400 }}
+          >
+            {skill.icon}
+          </motion.div>
+          <div>
+            <div className="skill-name">{skill.name}</div>
+            <div className="skill-level" style={{ color: LEVEL_COLOR[skill.level] }}>
+              {skill.level}
+            </div>
+          </div>
+          <div style={{ marginLeft: 'auto', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+            {skill.pct}%
           </div>
         </div>
-        <div style={{ marginLeft: 'auto', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-          {skill.pct}%
+        <div className="skill-bar-track">
+          <motion.div
+            className="skill-bar-fill"
+            initial={{ scaleX: 0 }}
+            animate={inView ? { scaleX: skill.pct / 100 } : {}}
+            transition={{ duration: 1.2, delay: 0.3 + index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+          />
         </div>
-      </div>
-      <div className="skill-bar-track">
-        <motion.div
-          className="skill-bar-fill"
-          initial={{ scaleX: 0 }}
-          animate={inView ? { scaleX: skill.pct / 100 } : {}}
-          transition={{ duration: 1, delay: 0.3 + index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </div>
-    </motion.div>
+      </motion.div>
+    </TiltCard>
   );
 }
 
@@ -85,43 +94,59 @@ export default function Skills() {
   return (
     <section className="section" id="skills" ref={ref}>
       <div className="container">
-        <motion.div
-          className="section-header"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="section-tag">⚡ Skills</div>
-          <h2 className="section-title">Technical Expertise</h2>
-          <p className="section-subtitle">
-            A diverse toolkit spanning full-stack development, ERP customization, and cutting-edge AI integration.
-          </p>
-        </motion.div>
+        <ScrollReveal>
+          <div className="section-header">
+            <div className="section-tag">⚡ Skills</div>
+            <AnimatedText
+              text="Technical Expertise"
+              tag="h2"
+              mode="word"
+              className="section-title"
+              staggerDelay={0.08}
+            />
+            <p className="section-subtitle">
+              A diverse toolkit spanning full-stack development, ERP customization, and cutting-edge AI integration.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Tabs */}
-        <div className="skills-tabs">
+        <motion.div
+          className="skills-tabs"
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           {tabs.map(tab => (
             <motion.button
               key={tab}
               className={`skills-tab${active === tab ? ' active' : ''}`}
               onClick={() => setActive(tab)}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.06, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              layout
             >
               {tab}
+              {active === tab && (
+                <motion.div
+                  className="skills-tab-indicator"
+                  layoutId="skillTabIndicator"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
             </motion.button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Skill cards */}
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
             className="skills-grid"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.35 }}
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.97 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             {SKILL_GROUPS[active].map((skill, i) => (
               <SkillCard key={skill.name} skill={skill} index={i} inView={inView} />

@@ -2,12 +2,9 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { FiDownload, FiCode, FiCpu, FiDatabase } from 'react-icons/fi';
 import profileImg from '../assets/profile.jpeg';
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 40 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
-});
+import { ScrollReveal, StaggerContainer, StaggerItem, MagneticButton } from './AnimationPrimitives';
+import TiltCard from './TiltCard';
+import AnimatedText from './AnimatedText';
 
 const TAGS = [
   'MERN Stack', 'Odoo Dev', 'LangChain', 'AI Chatbots',
@@ -32,9 +29,9 @@ export default function About() {
           {/* LEFT — IMAGE */}
           <motion.div
             className="about-image-wrap"
-            initial={{ opacity: 0, x: -50 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: -60, scale: 0.9 }}
+            animate={inView ? { opacity: 1, x: 0, scale: 1 } : {}}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="about-glow" />
             <motion.div
@@ -47,11 +44,22 @@ export default function About() {
                 alt="Profile"
                 className="about-avatar"
               />
+              {/* Floating decoration rings */}
+              <motion.div
+                className="about-ring about-ring-1"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+              />
+              <motion.div
+                className="about-ring about-ring-2"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+              />
             </motion.div>
             <motion.div
               className="about-badge"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
@@ -62,86 +70,71 @@ export default function About() {
 
           {/* RIGHT — CONTENT */}
           <div className="about-content">
-            <motion.p
-              className="about-subtitle"
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              {'// about_me.js'}
-            </motion.p>
+            <ScrollReveal delay={0.1}>
+              <p className="about-subtitle">{'// about_me.js'}</p>
+            </ScrollReveal>
 
-            <motion.h2 className="about-title" {...(inView ? fadeUp(0.2) : { initial: { opacity: 0 } })}>
-              Crafting{' '}
-              <span className="gradient-text">Intelligent</span>
-              <br />
-              Full-Stack Solutions
-            </motion.h2>
+            <ScrollReveal delay={0.2}>
+              <AnimatedText
+                text="Crafting Intelligent Full-Stack Solutions"
+                tag="h2"
+                mode="word"
+                className="about-title"
+                staggerDelay={0.05}
+              />
+            </ScrollReveal>
 
-            <motion.p
-              className="about-text"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              I'm a passionate full-stack developer with deep expertise in the <strong style={{ color: 'var(--accent-glow)' }}>MERN stack</strong> — building everything from RESTful APIs to interactive React frontends. I love turning complex problems into clean, performant solutions.
-            </motion.p>
+            <ScrollReveal delay={0.3}>
+              <p className="about-text">
+                I'm a passionate full-stack developer with deep expertise in the <strong style={{ color: 'var(--accent-glow)' }}>MERN stack</strong> — building everything from RESTful APIs to interactive React frontends. I love turning complex problems into clean, performant solutions.
+              </p>
+            </ScrollReveal>
 
-            <motion.p
-              className="about-text"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Beyond the MERN stack, I specialize in <strong style={{ color: 'var(--accent-cyan)' }}>Odoo ERP development</strong> — crafting custom modules, QWeb reports, and business workflow automations. I'm also deeply invested in <strong style={{ color: 'var(--accent-pink)' }}>LangChain AI integration</strong>, building intelligent chatbots and AI agents with memory and tool-calling capabilities.
-            </motion.p>
+            <ScrollReveal delay={0.4}>
+              <p className="about-text">
+                Beyond the MERN stack, I specialize in <strong style={{ color: 'var(--accent-cyan)' }}>Odoo ERP development</strong> — crafting custom modules, QWeb reports, and business workflow automations. I'm also deeply invested in <strong style={{ color: 'var(--accent-pink)' }}>LangChain AI integration</strong>, building intelligent chatbots and AI agents with memory and tool-calling capabilities.
+              </p>
+            </ScrollReveal>
 
-            <motion.div
-              className="about-tags"
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              {TAGS.map((tag, i) => (
-                <motion.span
-                  key={tag}
-                  className="about-tag"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={inView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.3, delay: 0.5 + i * 0.04 }}
-                >
-                  {tag}
-                </motion.span>
+            <StaggerContainer className="about-tags" stagger={0.04} delay={0.5}>
+              {TAGS.map((tag) => (
+                <StaggerItem key={tag}>
+                  <motion.span
+                    className="about-tag"
+                    whileHover={{ scale: 1.1, y: -3 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                  >
+                    {tag}
+                  </motion.span>
+                </StaggerItem>
               ))}
-            </motion.div>
+            </StaggerContainer>
 
             {/* Highlights row */}
-            <motion.div
-              className="about-highlights"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
+            <StaggerContainer className="about-highlights" stagger={0.1} delay={0.6}>
               {HIGHLIGHTS.map(h => (
-                <div key={h.title} className="glass-card" style={{ padding: '16px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.4rem', color: 'var(--accent-glow)', marginBottom: 8 }}>{h.icon}</div>
-                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>{h.title}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{h.desc}</div>
-                </div>
+                <StaggerItem key={h.title}>
+                  <TiltCard className="glass-card about-highlight-card" intensity={10} scale={1.04}>
+                    <div className="about-highlight-icon">{h.icon}</div>
+                    <div className="about-highlight-title">{h.title}</div>
+                    <div className="about-highlight-desc">{h.desc}</div>
+                  </TiltCard>
+                </StaggerItem>
               ))}
-            </motion.div>
+            </StaggerContainer>
 
-            <motion.div
-              style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.7 }}
-            >
-              <a href="#contact" className="btn btn-primary">Let's Work Together</a>
-              <a href="/resume.pdf" className="btn btn-outline" download>
-                <FiDownload /> Download CV
-              </a>
-            </motion.div>
+            <ScrollReveal delay={0.7}>
+              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+                <MagneticButton strength={0.2}>
+                  <a href="#contact" className="btn btn-primary">Let's Work Together</a>
+                </MagneticButton>
+                <MagneticButton strength={0.2}>
+                  <a href="/resume.pdf" className="btn btn-outline" download>
+                    <FiDownload /> Download CV
+                  </a>
+                </MagneticButton>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </div>
